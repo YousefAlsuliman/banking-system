@@ -1,14 +1,18 @@
 package com.microservices.account_service.models.entities;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@RestController
+@Entity
+@Table(name = "account_table")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AccountEntity {
 
     @Id
