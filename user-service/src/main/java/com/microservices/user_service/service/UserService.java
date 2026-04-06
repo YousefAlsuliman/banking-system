@@ -1,5 +1,8 @@
 package com.microservices.user_service.service;
 
+import com.microservices.user_service.models.client.AccountClient;
+import com.microservices.user_service.models.dto.response.AccountResponse;
+import com.microservices.user_service.models.dto.response.UserDetailsResponse;
 import com.microservices.user_service.models.entity.UserEntity;
 import com.microservices.user_service.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -15,9 +18,11 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AccountClient accountClient;
 
-    public ResponseEntity<UserEntity> getUser(Long userId) {
-        Optional<UserEntity> user = this.userRepository.findById(userId);
+    public ResponseEntity<UserEntity> getUser(Long id) {
+        Optional<UserEntity> user = this.userRepository.findById(id);
         return user.map(u -> ResponseEntity.ok(u)).orElseThrow(() -> new RuntimeException("user not found!"));
     }
 
@@ -34,21 +39,28 @@ public class UserService {
         return ResponseEntity.ok(user);
     }
 
-    public ResponseEntity<UserEntity> updateUser(Long userId, @Valid UserEntity user) {
-        Optional<UserEntity> targetUser = this.userRepository.findById(userId);
+    public ResponseEntity<UserEntity> updateUser(Long id, @Valid UserEntity user) {
+        Optional<UserEntity> targetUser = this.userRepository.findById(id);
         UserEntity updatedUser = targetUser.map(t -> {
             t.setName(user.getName());
             t.setEmail(user.getEmail());
             t.setPhone(user.getPhone());
             this.userRepository.save(t);
             return t;
-        }).orElseThrow(() -> new RuntimeException("no user with id: " + userId));
+        }).orElseThrow(() -> new RuntimeException("no user with id: " + id));
         return ResponseEntity.ok(updatedUser);
     }
 
-    public ResponseEntity<String> deleteUser(Long userId) {
-        this.userRepository.findById(userId).orElseThrow(() -> new RuntimeException("no user with id: " + userId));
-        this.userRepository.deleteById(userId);
+    public ResponseEntity<String> deleteUser(Long id) {
+        this.userRepository.findById(id).orElseThrow(() -> new RuntimeException("no user with id: " + id));
+        this.userRepository.deleteById(id);
         return ResponseEntity.ok("user deleted successfully!");
+    }
+
+    public ResponseEntity<UserDetailsResponse> getUserDetails(Long id){
+        UserEntity user = getUser(id).getBody();
+        List<AccountResponse> accounts = this.accountClient.getAccountsByUserId(id).getBody();
+
+        return ResponseEntity.ok(new UserDetailsResponse(user, accounts));
     }
 }

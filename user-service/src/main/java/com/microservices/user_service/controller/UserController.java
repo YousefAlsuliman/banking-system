@@ -1,5 +1,6 @@
 package com.microservices.user_service.controller;
 
+import com.microservices.user_service.models.dto.response.UserDetailsResponse;
 import com.microservices.user_service.models.entity.UserEntity;
 import com.microservices.user_service.service.UserService;
 import jakarta.validation.Valid;
@@ -40,4 +41,8 @@ public class UserController {
         return this.userService.deleteUser(id);
     }
 
+    @GetMapping("details/{id}")
+    private ResponseEntity<UserDetailsResponse> getUserDetails(@PathVariable Long id){
+        return this.userService.getUserDetails(id);
+    }
 }
