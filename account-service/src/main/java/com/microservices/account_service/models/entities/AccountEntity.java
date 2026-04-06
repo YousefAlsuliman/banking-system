@@ -25,7 +25,7 @@ public class AccountEntity {
     @NotBlank(message = "account type is required")
     private String type;
 
-    @NotBlank(message = "balance is required")
+    @NotNull(message = "balance is required")
     @DecimalMin(value = "0.0", inclusive = true, message = "Balance cannot be negative")
     private Double balance;
 
