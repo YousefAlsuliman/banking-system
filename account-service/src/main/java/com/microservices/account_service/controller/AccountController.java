@@ -2,12 +2,10 @@ package com.microservices.account_service.controller;
 
 import com.microservices.account_service.models.entities.AccountEntity;
 import com.microservices.account_service.service.AccountService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,5 +24,25 @@ public class AccountController {
     @GetMapping
     private ResponseEntity<List<AccountEntity>> getAllAccounts(){
         return this.accountService.getAllAccounts();
+    }
+
+    @PostMapping
+    public ResponseEntity<AccountEntity> createAccount(@Valid @RequestBody AccountEntity account) {
+        return this.accountService.createAccount(account);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<AccountEntity>> getAccountsByUserId(@PathVariable Long userId) {
+        return accountService.getAccountsByUserId(userId);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AccountEntity> updateAccount(@PathVariable Long id, @Valid @RequestBody AccountEntity account) {
+        return this.accountService.updateAccount(id, account);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteAccount(@PathVariable Long id) {
+        return this.accountService.deleteAccount(id);
     }
 }
