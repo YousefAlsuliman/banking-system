@@ -21,25 +21,25 @@ public class UserService {
     @Autowired
     private AccountClient accountClient;
 
-    public ResponseEntity<UserEntity> getUser(Long id) {
+    public UserEntity getUser(Long id) {
         Optional<UserEntity> user = this.userRepository.findById(id);
-        return user.map(u -> ResponseEntity.ok(u)).orElseThrow(() -> new RuntimeException("user not found!"));
+        return user.orElseThrow(() -> new RuntimeException("user not found!"));
     }
 
-    public ResponseEntity<List<UserEntity>> getAllUsers() {
+    public List<UserEntity> getAllUsers() {
         List<UserEntity> UserEntities = this.userRepository.findAll();
         if (UserEntities.isEmpty()) {
             throw new RuntimeException("no users available!");
         }
-        return ResponseEntity.ok(this.userRepository.findAll());
+        return this.userRepository.findAll();
     }
 
-    public ResponseEntity<UserEntity> createUser(UserEntity user) {
+    public UserEntity createUser(UserEntity user) {
         this.userRepository.save(user);
-        return ResponseEntity.ok(user);
+        return user;
     }
 
-    public ResponseEntity<UserEntity> updateUser(Long id, @Valid UserEntity user) {
+    public UserEntity updateUser(Long id, @Valid UserEntity user) {
         Optional<UserEntity> targetUser = this.userRepository.findById(id);
         UserEntity updatedUser = targetUser.map(t -> {
             t.setName(user.getName());
@@ -48,19 +48,19 @@ public class UserService {
             this.userRepository.save(t);
             return t;
         }).orElseThrow(() -> new RuntimeException("no user with id: " + id));
-        return ResponseEntity.ok(updatedUser);
+        return updatedUser;
     }
 
-    public ResponseEntity<String> deleteUser(Long id) {
+    public String deleteUser(Long id) {
         this.userRepository.findById(id).orElseThrow(() -> new RuntimeException("no user with id: " + id));
         this.userRepository.deleteById(id);
-        return ResponseEntity.ok("user deleted successfully!");
+        return "user deleted successfully!";
     }
 
-    public ResponseEntity<UserDetailsResponse> getUserDetails(Long id){
-        UserEntity user = getUser(id).getBody();
+    public UserDetailsResponse getUserDetails(Long id){
+        UserEntity user = getUser(id);
         List<AccountResponse> accounts = this.accountClient.getAccountsByUserId(id).getBody();
 
-        return ResponseEntity.ok(new UserDetailsResponse(user, accounts));
+        return new UserDetailsResponse(user, accounts);
     }
 }

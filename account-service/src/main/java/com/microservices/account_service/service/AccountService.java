@@ -16,30 +16,30 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public ResponseEntity<AccountEntity> getAccountById(Long id) {
+    public AccountEntity getAccountById(Long id) {
         Optional<AccountEntity> account = this.accountRepository.findById(id);
-        return account.map(a -> ResponseEntity.ok(a)).orElseThrow(() -> new RuntimeException("no account with id: " + id));
+        return account.orElseThrow(() -> new RuntimeException("no account with id: " + id));
     }
 
-    public ResponseEntity<List<AccountEntity>> getAllAccounts() {
+    public List<AccountEntity> getAllAccounts() {
         List<AccountEntity> accounts = this.accountRepository.findAll();
-        return ResponseEntity.ok(accounts);
+        return accounts;
     }
 
-    public ResponseEntity<AccountEntity> createAccount(@Valid AccountEntity account) {
+    public AccountEntity createAccount(@Valid AccountEntity account) {
         this.accountRepository.save(account);
-        return ResponseEntity.ok(account);
+        return account;
     }
 
-    public ResponseEntity<List<AccountEntity>> getAccountsByUserId(Long userId) {
+    public List<AccountEntity> getAccountsByUserId(Long userId) {
         List<AccountEntity> accounts = this.accountRepository.findByUserId(userId);
         if (accounts.isEmpty()) {
             throw new RuntimeException("no accounts with userId: " + userId);
         }
-        return ResponseEntity.ok(accounts);
+        return accounts;
     }
 
-    public ResponseEntity<AccountEntity> updateAccount(Long id, AccountEntity account) {
+    public AccountEntity updateAccount(Long id, AccountEntity account) {
         Optional<AccountEntity> targetAccount = this.accountRepository.findById(id);
 
         AccountEntity updatedAccount = targetAccount.map(a ->{
@@ -51,13 +51,13 @@ public class AccountService {
             return a;
         }).orElseThrow(() -> new RuntimeException("no account with id: " + id));
 
-        return ResponseEntity.ok(updatedAccount);
+        return updatedAccount;
     }
 
-    public ResponseEntity<String> deleteAccount(Long id) {
+    public String deleteAccount(Long id) {
         if(this.accountRepository.existsById(id)){
             this.accountRepository.deleteById(id);
-            return ResponseEntity.ok("Account deleted successfully");
+            return "Account deleted successfully";
         }
         throw new RuntimeException("no account with id: " + id);
     }
