@@ -1,5 +1,6 @@
 package com.microservices.account_service.service;
 
+import com.microservices.account_service.exceptions.NoAccountsFoundException;
 import com.microservices.account_service.models.entities.AccountEntity;
 import com.microservices.account_service.repository.AccountRepository;
 import jakarta.validation.Valid;
@@ -34,7 +35,7 @@ public class AccountService {
     public List<AccountEntity> getAccountsByUserId(Long userId) {
         List<AccountEntity> accounts = this.accountRepository.findByUserId(userId);
         if (accounts.isEmpty()) {
-            throw new RuntimeException("no accounts with userId: " + userId);
+            throw new NoAccountsFoundException();
         }
         return accounts;
     }
