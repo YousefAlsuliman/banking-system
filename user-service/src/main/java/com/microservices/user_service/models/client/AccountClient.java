@@ -13,6 +13,6 @@ import java.util.List;
 public interface AccountClient {
 
     @GetMapping("/v1/accounts/user/{userId}") // the api : http://localhost:8082/v1/accounts/user/{userId}
-    ResponseEntity<List<AccountResponse>> getAccountsByUserId(@PathVariable Long userId); // the method to call the api
+    public ResponseEntity<List<AccountResponse>> getAccountsByUserId(@PathVariable Long userId); // the method to call the api
 
 }
